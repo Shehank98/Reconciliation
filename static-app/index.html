@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Reconciliation System</title>
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- PDF.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- Google Sheets API -->
+    <script src="https://apis.google.com/js/api.js"></script>
+
+    <!-- Papa Parse for CSV/Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <!-- SheetJS for Excel export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1>📺 Media Reconciliation System</h1>
+            <p class="subtitle">Static Web Application - No Server Required</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="setup">🔧 Setup</button>
+            <button class="tab-btn" data-tab="upload">📤 Upload TC</button>
+            <button class="tab-btn" data-tab="mapping">🔗 Theme Mapping</button>
+            <button class="tab-btn" data-tab="reconcile">▶️ Reconcile</button>
+            <button class="tab-btn" data-tab="results">📊 Results</button>
+            <button class="tab-btn" data-tab="manual">✋ Manual Match</button>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+
+            <!-- Tab: Setup -->
+            <section id="tab-setup" class="tab-content active">
+                <div class="card">
+                    <h2>🌐 Google Sheets Setup</h2>
+                    <p>Connect to your LMRB data source</p>
+
+                    <div class="form-group">
+                        <label>Google Sheets API Key</label>
+                        <input type="text" id="apiKey" placeholder="Enter your Google API key">
+                        <small>Get API key from <a href="https://console.cloud.google.com/" target="_blank">Google Cloud Console</a></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Google Sheet ID</label>
+                        <input type="text" id="sheetId" placeholder="1ABC...XYZ">
+                        <small>From URL: docs.google.com/spreadsheets/d/<strong>YOUR_SHEET_ID</strong>/edit</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date Range</label>
+                        <div class="date-range">
+                            <input type="date" id="startDate">
+                            <span>to</span>
+                            <input type="date" id="endDate">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="app.loadLMRBData()">
+                        Load LMRB Data
+                    </button>
+
+                    <div id="lmrbStatus" class="status-message"></div>
+                </div>
+
+                <div class="card">
+                    <h3>📋 Current Data Status</h3>
+                    <div class="data-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">LMRB Records:</span>
+                            <span class="stat-value" id="lmrbCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">TC Records:</span>
+                            <span class="stat-value" id="tcCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Mappings:</span>
+                            <span class="stat-value" id="mappingCount">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Upload TC -->
+            <section id="tab-upload" class="tab-content">
+                <div class="card">
+                    <h2>📄 Upload TC PDF</h2>
+
+                    <div class="form-group">
+                        <label>Select Channel</label>
+                        <select id="channelSelect" onchange="app.updateChannelInfo()">
+                            <option value="">-- Select Channel --</option>
+                            <option value="sirasa">Sirasa TV</option>
+                            <option value="hiru">Hiru TV</option>
+                            <option value="derana">Derana TV</option>
+                            <option value="itv">ITN</option>
+                            <option value="tv1">TV1</option>
+                        </select>
+                    </div>
+
+                    <div id="channelInfo" class="info-box" style="display: none;">
+                        <h4>Channel PDF Format Info</h4>
+                        <p id="channelFormatDesc"></p>
+                    </div>
+
+                    <div class="upload-area">
+                        <input type="file" id="tcPdfFile" accept=".pdf" style="display: none;">
+                        <button class="btn btn-upload" onclick="document.getElementById('tcPdfFile').click()">
+                            📁 Select TC PDF File
+                        </button>
+                        <p id="selectedFile" class="selected-file"></p>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="app.convertTCPdf()" id="convertBtn" disabled>
+                        🔄 Convert PDF to Data
+                    </button>
+
+                    <div id="uploadStatus" class="status-message"></div>
+
+                    <div id="tcPreview" class="data-preview" style="display: none;">
+                        <h3>Preview TC Data</h3>
+                        <div id="tcPreviewTable"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Theme Mapping -->
+            <section id="tab-mapping" class="tab-content">
+                <div class="card">
+                    <h2>🔗 Theme Mapping</h2>
+
+                    <div class="mapping-form">
+                        <div class="form-group">
+                            <label>Mapping Type</label>
+                            <select id="mappingType">
+                                <option value="COMMERCIAL BENEFITS">Commercial Benefits</option>
+                                <option value="SPONSORSHIP">Sponsorship</option>
+                            </select>
+                        </div>
+
+                        <div class="mapping-row">
+                            <div class="form-group">
+                                <label>TC Theme</label>
+                                <input type="text" id="tcTheme" placeholder="e.g., Coca Cola">
+                            </div>
+                            <div class="form-group">
+                                <label>Duration (s)</label>
+                                <select id="tcDuration">
+                                    <option value="15">15s</option>
+                                    <option value="30" selected>30s</option>
+                                    <option value="45">45s</option>
+                                    <option value="60">60s</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mapping-arrow">⬇️ Maps To ⬇️</div>
+
+                        <div class="mapping-row">
+                            <div class="form-group">
+                                <label>LMRB Theme</label>
+                                <input type="text" id="lmrbTheme" placeholder="e.g., Beverages">
+                            </div>
+                            <div class="form-group">
+                                <label>Duration (s)</label>
+                                <select id="lmrbDuration">
+                                    <option value="15">15s</option>
+                                    <option value="30" selected>30s</option>
+                                    <option value="45">45s</option>
+                                    <option value="60">60s</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="app.addMapping()">
+                            ➕ Add Mapping
+                        </button>
+                    </div>
+
+                    <div class="mappings-list">
+                        <h3>Current Mappings (<span id="mappingsCount">0</span>)</h3>
+                        <div id="mappingsList"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Reconciliation -->
+            <section id="tab-reconcile" class="tab-content">
+                <div class="card">
+                    <h2>▶️ Run Reconciliation</h2>
+
+                    <div class="form-group">
+                        <label>Time Tolerance (seconds)</label>
+                        <input type="number" id="timeTolerance" value="30" min="0" max="300">
+                        <small>Maximum time difference allowed for matching</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="ignoreDate">
+                            Ignore Date (match only on time and theme)
+                        </label>
+                    </div>
+
+                    <button class="btn btn-primary btn-large" onclick="app.runReconciliation()">
+                        ▶️ Run Reconciliation
+                    </button>
+
+                    <div id="reconcileStatus" class="status-message"></div>
+
+                    <div id="reconcileResults" style="display: none;">
+                        <h3>📊 Results Summary</h3>
+                        <div class="results-grid">
+                            <div class="result-card">
+                                <div class="result-value" id="totalLMRB">0</div>
+                                <div class="result-label">Total LMRB</div>
+                            </div>
+                            <div class="result-card">
+                                <div class="result-value" id="totalTC">0</div>
+                                <div class="result-label">Total TC</div>
+                            </div>
+                            <div class="result-card success">
+                                <div class="result-value" id="totalMatched">0</div>
+                                <div class="result-label">Matched</div>
+                            </div>
+                            <div class="result-card warning">
+                                <div class="result-value" id="totalUnmatched">0</div>
+                                <div class="result-label">Unmatched</div>
+                            </div>
+                            <div class="result-card primary">
+                                <div class="result-value" id="matchRate">0%</div>
+                                <div class="result-label">Match Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab: Results -->
+            <section id="tab-results" class="tab-content">
+                <div class="card">
+                    <div class="results-header">
+                        <h2>📊 Reconciliation Results</h2>
+                        <div class="export-buttons">
+                            <button class="btn btn-secondary" onclick="app.exportToExcel()">
+                                📥 Export Excel
+                            </button>
+                            <button class="btn btn-secondary" onclick="app.exportToPDF()">
+                                📄 Export PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="results-tabs">
+                        <button class="results-tab-btn active" onclick="app.showResultsTab('matched')">
+                            ✅ Matched (<span id="matchedCountTab">0</span>)
+                        </button>
+                        <button class="results-tab-btn" onclick="app.showResultsTab('unmatchedLMRB')">
+                            ⚠️ Unmatched LMRB (<span id="unmatchedLMRBCountTab">0</span>)
+                        </button>
+                        <button class="results-tab-btn" onclick="app.showResultsTab('unmatchedTC')">
+                            ⚠️ Unmatched TC (<span id="unmatchedTCCountTab">0</span>)
+                        </button>
+                    </div>
+
+                    <div id="resultsTableContainer" class="table-container"></div>
+                </div>
+            </section>
+
+            <!-- Tab: Manual Matching -->
+            <section id="tab-manual" class="tab-content">
+                <div class="card">
+                    <h2>✋ Manual Matching</h2>
+
+                    <div class="manual-match-container">
+                        <div class="match-column">
+                            <h3>Unmatched LMRB (<span id="manualLMRBCount">0</span>)</h3>
+                            <div id="manualLMRBList" class="match-list"></div>
+                        </div>
+
+                        <div class="match-controls">
+                            <button class="btn btn-primary" onclick="app.manualMatch()" id="manualMatchBtn" disabled>
+                                🔗 Match Selected
+                            </button>
+                        </div>
+
+                        <div class="match-column">
+                            <h3>Unmatched TC (<span id="manualTCCount">0</span>)</h3>
+                            <div id="manualTCList" class="match-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>Media Reconciliation System v2.0 - Static Web App | No Backend Required</p>
+        </footer>
+    </div>
+
+    <!-- Load Scripts -->
+    <script src="js/utils/storage.js"></script>
+    <script src="js/utils/googleSheets.js"></script>
+    <script src="js/utils/reconciliation.js"></script>
+    <script src="js/converters/sirasa.js"></script>
+    <script src="js/converters/hiru.js"></script>
+    <script src="js/converters/derana.js"></script>
+    <script src="js/converters/itv.js"></script>
+    <script src="js/converters/tv1.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+
+        // File selection handler
+        document.getElementById('tcPdfFile').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                document.getElementById('selectedFile').textContent = `Selected: ${file.name}`;
+                document.getElementById('convertBtn').disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
