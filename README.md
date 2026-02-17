@@ -1,315 +1,313 @@
 # Media Reconciliation System
 
-> Modern web application for reconciling Telecast Certificate (TC) data with LMRB broadcast records
+> 📺 **Static Web Application for Media Reconciliation**
+> 100% Client-Side | Zero Backend | GitHub Pages Ready
 
-## Overview
+![Status](https://img.shields.io/badge/status-active-success.svg)
+![Platform](https://img.shields.io/badge/platform-web-blue.svg)
+![License](https://img.shields.io/badge/license-private-red.svg)
 
-The Media Reconciliation System is a comprehensive solution for matching television advertisement broadcast data (LMRB) with Telecast Certificates (TC). The system features Google Sheets integration, automatic PDF conversion, intelligent matching algorithms, and comprehensive reporting.
+## 🎯 Overview
 
-### Key Features
+A **pure static web application** for reconciling TV advertising data (TC PDFs) against LMRB data from Google Sheets. Runs entirely in your browser with **zero hosting costs**.
 
-- ✅ **Google Sheets Integration** - Fetch LMRB data directly from Google Sheets with date range filtering
-- ✅ **TC PDF Auto-Conversion** - Upload PDF files and automatically extract structured data
-- ✅ **Smart Theme Mapping** - Configure flexible mappings between TC and LMRB themes
-- ✅ **Intelligent Matching** - Advanced reconciliation algorithm with time tolerance and date options
-- ✅ **Manual Matching** - Manually match unmatched records through intuitive UI
-- ✅ **Export Functionality** - Export results to Excel and PDF formats
-- ✅ **Modern UI** - Clean, responsive interface built with React and Material-UI
-- ✅ **No Schedule Dependency** - Streamlined workflow without schedule upload requirements
+### ✨ Key Features
 
-## Architecture
+- ✅ **100% Client-Side** - No backend server required
+- ✅ **GitHub Pages Ready** - Deploy for free in 5 minutes
+- ✅ **Channel-Specific PDF Converters** - Modular system for Sirasa, Hiru, Derana, ITN, TV1
+- ✅ **Google Sheets Integration** - Direct API access to LMRB data
+- ✅ **Browser-Based Storage** - All data stored in localStorage
+- ✅ **Excel & PDF Export** - Generate reports client-side
+- ✅ **Mobile Responsive** - Works on desktop, tablet, and mobile
 
-### Backend (Flask + Python)
-- **Framework**: Flask 3.0
-- **PDF Processing**: pdfplumber
-- **Data Processing**: pandas, openpyxl
-- **Google API**: google-api-python-client
-- **Report Generation**: reportlab
+## 🚀 Quick Start
 
-### Frontend (React + Material-UI)
-- **Framework**: React 18
-- **UI Library**: Material-UI (MUI) 5
-- **Routing**: React Router v6
-- **Build Tool**: Vite
-- **Date Handling**: dayjs, @mui/x-date-pickers
+### 1. Deploy to GitHub Pages (5 Minutes)
 
-## Installation
+1. **Enable GitHub Pages:**
+   - Go to repository Settings → Pages
+   - Source: `claude/remove-schedule-section-LrGLj` branch
+   - Folder: `/ (root)`
+   - Click Save
 
-### Prerequisites
+2. **Your app will be live at:**
+   ```
+   https://shehank98.github.io/Reconciliation/static-app/
+   ```
 
-- Python 3.8 or higher
-- Node.js 16 or higher
-- Google Cloud Project with Sheets API enabled (for production)
-
-### Backend Setup
-
-```bash
-# Navigate to backend directory
-cd backend
-
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# On Linux/Mac:
-source venv/bin/activate
-# On Windows:
-venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### Google Sheets Setup (Optional but Recommended)
+### 2. Setup Google Sheets API
 
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create a new project or select existing
+2. Create new project
 3. Enable **Google Sheets API**
-4. Create **Service Account** credentials
-5. Download JSON key file
-6. Save as `backend/credentials/service-account.json`
+4. Create **API Key** (Credentials → Create Credentials)
+5. Restrict to your domain and Google Sheets API only
+6. Make your Google Sheet publicly viewable
 
-**Or** set environment variable:
-```bash
-export GOOGLE_CREDENTIALS_PATH=/path/to/service-account.json
-```
+### 3. Start Using
 
-> **Note**: If you don't have credentials, the system will use mock data for testing.
+1. Open your deployed app
+2. Enter API Key and Sheet ID
+3. Select date range and load LMRB data
+4. Upload TC PDF (select channel first)
+5. Add theme mappings
+6. Run reconciliation
+7. Export results!
 
-### Frontend Setup
-
-```bash
-# Navigate to frontend directory
-cd frontend
-
-# Install dependencies
-npm install
-```
-
-## Running the Application
-
-### Start Backend Server
-
-```bash
-cd backend
-python app.py
-```
-
-Backend will start on `http://localhost:5000`
-
-### Start Frontend Development Server
-
-```bash
-cd frontend
-npm run dev
-```
-
-Frontend will start on `http://localhost:3000`
-
-### Access the Application
-
-Open your browser and navigate to:
-```
-http://localhost:3000
-```
-
-## Usage Guide
-
-### Step 1: Connect to Google Sheet
-
-1. Open the Dashboard
-2. Enter your Google Sheet ID (found in the URL of your Google Sheet)
-   - Example URL: `https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit`
-3. Click "Connect to Google Sheet"
-
-### Step 2: Load LMRB Data & Upload TC PDF
-
-1. Navigate to **Upload TC** page
-2. Select date range for LMRB data
-3. Optionally filter by channel
-4. Click "Load LMRB Data"
-5. Upload TC PDF file
-6. Click "Upload & Convert PDF"
-7. Optionally filter by specific products
-
-### Step 3: Configure Theme Mappings
-
-1. Navigate to **Theme Mapping** page
-2. Add mappings between TC themes and LMRB themes:
-   - Select mapping type (Commercial Benefits / Sponsorship)
-   - Enter TC theme and duration
-   - Enter corresponding LMRB theme and duration
-3. Click "Add Mapping"
-4. Repeat for all theme relationships
-
-> **Tip**: You can map multiple TC themes to the same LMRB theme for flexible matching
-
-### Step 4: Run Reconciliation
-
-1. Navigate to **Reconciliation** page
-2. Configure matching parameters:
-   - **Time Tolerance**: Maximum time difference in seconds (default: 30)
-   - **Ignore Date**: Match only on time and theme, ignore date
-3. Click "Run Reconciliation"
-4. View summary statistics
-
-### Step 5: Review Results
-
-1. Navigate to **Results** page
-2. View tabs:
-   - **Matched**: Successfully matched records
-   - **Unmatched LMRB**: LMRB records without TC match
-   - **Unmatched TC**: TC records without LMRB match
-3. Export results:
-   - **Export Excel**: Full data with all sheets
-   - **Export PDF**: Summary report
-
-### Step 6: Manual Matching (Optional)
-
-1. Navigate to **Manual Matching** page
-2. Select one unmatched LMRB record
-3. Select one unmatched TC record
-4. Click "Match Selected Records"
-
-## API Documentation
-
-See [backend/README.md](backend/README.md) for detailed API documentation.
-
-## Project Structure
+## 📁 Project Structure
 
 ```
 Reconciliation/
-├── backend/                 # Flask backend
-│   ├── app/
-│   │   ├── __init__.py
-│   │   ├── google_sheets.py    # Google Sheets integration
-│   │   └── pdf_converter.py    # TC PDF conversion
-│   ├── app.py                   # Main Flask application
-│   ├── requirements.txt         # Python dependencies
-│   └── README.md               # Backend documentation
-│
-├── frontend/                # React frontend
-│   ├── src/
-│   │   ├── components/
-│   │   │   └── Layout.jsx      # Main layout with navigation
-│   │   ├── pages/
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Upload.jsx
-│   │   │   ├── ThemeMapping.jsx
-│   │   │   ├── Reconciliation.jsx
-│   │   │   ├── Results.jsx
-│   │   │   └── ManualMatching.jsx
-│   │   ├── services/
-│   │   │   └── api.js           # API service layer
-│   │   ├── App.jsx
-│   │   ├── main.jsx
-│   │   └── index.css
-│   ├── package.json
-│   ├── vite.config.js
-│   └── index.html
-│
-├── func/                    # Shared business logic
-│   ├── matching.py          # Reconciliation algorithm
-│   ├── format.py            # Data formatting
-│   ├── create_pdf.py        # PDF report generation
-│   └── ...
-│
-├── Main.py                  # Legacy Tkinter app (deprecated)
+├── static-app/              # Main application
+│   ├── index.html          # Entry point
+│   ├── css/
+│   │   └── styles.css      # Styling
+│   ├── js/
+│   │   ├── app.js          # Main controller
+│   │   ├── utils/
+│   │   │   ├── storage.js           # localStorage management
+│   │   │   ├── googleSheets.js      # Google Sheets API
+│   │   │   └── reconciliation.js    # Matching algorithm
+│   │   └── converters/              # Channel-specific PDF parsers
+│   │       ├── sirasa.js   # ✅ Sirasa TV (fully working)
+│   │       ├── hiru.js     # ⚠️ Hiru TV (template)
+│   │       ├── derana.js   # ⚠️ Derana TV (template)
+│   │       ├── itv.js      # ⚠️ ITN (template)
+│   │       └── tv1.js      # ⚠️ TV1 (template)
+│   └── README.md           # App documentation
+├── STATIC_APP_GUIDE.md     # Deployment guide
 └── README.md               # This file
 ```
 
-## Key Changes from Old System
+## 🔧 Channel-Specific PDF Converters
 
-### ✅ What's New
+### Modular System
 
-1. **Web-Based**: Modern React web app instead of Tkinter desktop app
-2. **Google Sheets**: Direct integration - no need to upload LMRB files manually
-3. **Date Range Selection**: Filter LMRB data by date range
-4. **Schedule Removed**: Simplified workflow without schedule upload/matching
-5. **Modern UI**: Clean, responsive Material-UI design
-6. **Better UX**: Step-by-step wizard-style workflow
+Each TV channel has its own PDF converter that can be customized independently.
 
-### 🗑️ What's Removed
+#### ✅ Sirasa TV
+- **File:** `static-app/js/converters/sirasa.js`
+- **Status:** Fully implemented with multiple regex patterns
+- **Format:** Date | Program | Time | Theme | Duration
 
-1. **Schedule Upload Tab**: Completely removed
-2. **Schedule Matching**: No longer needed
-3. **File-based LMRB Upload**: Replaced with Google Sheets
-4. **Tkinter Desktop UI**: Replaced with React web interface
+#### ⚠️ Other Channels (Ready for Customization)
+- **Hiru TV:** `static-app/js/converters/hiru.js`
+- **Derana TV:** `static-app/js/converters/derana.js`
+- **ITN:** `static-app/js/converters/itv.js`
+- **TV1:** `static-app/js/converters/tv1.js`
 
-## Development
+### How to Customize a Converter
 
-### Building for Production
+1. Open the converter file (e.g., `static-app/js/converters/hiru.js`)
+2. Find the `parsePage()` method with TODO markers
+3. Update the regex pattern to match your channel's PDF format
+4. Test with a sample PDF
+5. Commit and push - GitHub Pages auto-updates!
 
-**Frontend:**
-```bash
-cd frontend
-npm run build
+**Example Pattern:**
+```javascript
+// For format: 01/01/2024 | News | 10:30:15 | Coca Cola | 30
+const pattern = /(\d{2}\/\d{2}\/\d{4})\s*\|\s*(.+?)\s*\|\s*(\d{2}:\d{2}:\d{2})\s*\|\s*(.+?)\s*\|\s*(\d+)/;
 ```
 
-Build output will be in `frontend/dist/`
+## 🎨 Features
 
-**Backend:**
+### Data Management
+- Load LMRB data from Google Sheets
+- Filter by date range
+- Upload and parse TC PDFs
+- Browser-based storage (localStorage)
 
-The Flask backend can be deployed using:
-- Gunicorn (recommended)
-- uWSGI
-- Docker
+### Theme Mapping
+- Map TC themes to LMRB themes
+- Support for different durations (15s, 30s, 45s, 60s)
+- Commercial Benefits and Sponsorship types
+- Easy add/delete mappings
 
-Example with Gunicorn:
-```bash
-pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
+### Reconciliation
+- Automatic matching based on theme, date, time, duration
+- Configurable time tolerance
+- Option to ignore date matching
+- Manual matching interface for unmatched records
+
+### Export
+- Export to Excel (multiple sheets)
+- Export summary to PDF
+- Download matched/unmatched reports
+
+## 📊 How It Works
+
+```
+┌─────────────────┐
+│   Your Browser  │
+│                 │
+│  ┌───────────┐  │
+│  │ HTML/CSS  │  │  All processing
+│  │ JavaScript│  │  happens here!
+│  └─────┬─────┘  │
+│        │        │
+└────────┼────────┘
+         │
+         ├──────► Google Sheets API (fetch LMRB data)
+         ├──────► PDF.js (parse TC PDF)
+         ├──────► localStorage (save all data)
+         ├──────► XLSX.js (export Excel)
+         └──────► jsPDF (export PDF)
 ```
 
-### Environment Variables
+**No backend server needed!** Everything runs in your browser.
 
-Create `.env` file in backend directory:
+## 🌐 Technologies
 
-```env
-GOOGLE_CREDENTIALS_PATH=/path/to/service-account.json
-FLASK_ENV=production
-SECRET_KEY=your-secret-key
-```
+- **Pure JavaScript** - No frameworks, no build process
+- **PDF.js** - Mozilla's PDF parsing library
+- **Google Sheets API v4** - Direct sheet access
+- **SheetJS (XLSX)** - Excel file generation
+- **jsPDF** - PDF report generation
+- **LocalStorage** - Browser data persistence
+- **CSS Grid/Flexbox** - Modern responsive layout
 
-## Troubleshooting
+## 💰 Cost Comparison
 
-### Google Sheets Connection Failed
+| Deployment Method | Monthly Cost | Setup Time |
+|-------------------|--------------|------------|
+| **GitHub Pages** (This app) | **$0** | **5 min** |
+| Vercel + Backend | $0-7 | 30 min |
+| Railway Full Stack | $5+ | 20 min |
+| AWS EC2 + S3 | $10+ | 60 min |
 
-- Verify Sheet ID is correct
-- Check service account has access to the sheet
-- Share your Google Sheet with the service account email
-- Verify credentials file path
+## 📖 Documentation
 
-### TC PDF Conversion Failed
+- **[STATIC_APP_GUIDE.md](STATIC_APP_GUIDE.md)** - Complete deployment guide
+- **[static-app/README.md](static-app/README.md)** - App documentation
+- **Inline Comments** - Every JavaScript file has detailed comments
 
-- Ensure PDF is a valid Telecast Certificate
-- Check PDF text is extractable (not scanned image)
-- Verify PDF format matches expected structure
+## 🔒 Security
 
-### No Matches Found
+### API Key Management
+- Use restricted API keys (domain-specific)
+- Enable only Google Sheets API
+- Never commit API keys to repository
 
-- Check theme mappings are correctly configured
-- Adjust time tolerance (increase if needed)
-- Verify date formats are consistent
-- Try enabling "Ignore Date" option
+### Data Privacy
+- All data stored in browser localStorage
+- Nothing sent to external servers (except Google Sheets API)
+- Clear browser data = clear all records
 
-## Contributing
+### Google Sheet Access
+- Sheet must be publicly viewable OR
+- Use OAuth for private sheets (requires code modification)
 
-This system is designed for internal use. For issues or feature requests, contact the development team.
+## 🐛 Troubleshooting
 
-## License
+### "Failed to fetch data from Google Sheets"
+- ✓ Check API key is correct
+- ✓ Verify Sheet ID is correct
+- ✓ Ensure sheet is publicly viewable
+- ✓ Check API restrictions allow your domain
+
+### "PDF conversion failed"
+- ✓ Verify PDF is not password-protected
+- ✓ Check PDF contains extractable text
+- ✓ Select correct channel before uploading
+- ✓ Check browser console for errors
+
+### Data not persisting
+- ✓ Ensure not in private/incognito mode
+- ✓ Check localStorage is enabled
+- ✓ Verify localStorage quota not exceeded
+
+## 📱 Browser Compatibility
+
+| Browser | Minimum Version | Status |
+|---------|----------------|---------|
+| Chrome | 90+ | ✅ Fully Supported |
+| Firefox | 88+ | ✅ Fully Supported |
+| Safari | 14+ | ✅ Fully Supported |
+| Edge | 90+ | ✅ Fully Supported |
+
+**Requirements:**
+- LocalStorage support
+- FileReader API
+- Fetch API
+- ES6+ JavaScript
+
+## 🎯 Workflow
+
+1. **Setup** → Enter API key, Sheet ID, date range
+2. **Load LMRB** → Fetch data from Google Sheets
+3. **Upload TC** → Select channel, upload PDF, convert
+4. **Map Themes** → Create TC ↔ LMRB mappings
+5. **Reconcile** → Run automatic matching
+6. **Review** → Check matched/unmatched records
+7. **Manual Match** → Match remaining records manually
+8. **Export** → Download Excel/PDF reports
+
+## 🚀 Deployment Options
+
+### GitHub Pages (Recommended)
+- ✅ Free hosting
+- ✅ Automatic HTTPS
+- ✅ CDN delivery
+- ✅ Auto-deploy on push
+
+### Alternative Static Hosts
+- **Netlify** - Drop folder or connect GitHub
+- **Vercel** - Import repository
+- **Cloudflare Pages** - Connect GitHub
+- **AWS S3** - Static website hosting
+- **Firebase Hosting** - Google's CDN
+
+## 📝 Next Steps
+
+### Immediate
+1. ✅ Deploy to GitHub Pages
+2. ✅ Get Google API key
+3. ✅ Test with Sirasa TV PDF
+
+### When You Have Time
+4. 📧 Provide sample PDFs from other channels
+5. ⚡ Customize converters for each channel
+6. 🎉 All channels working!
+
+## 🤝 Contributing
+
+This is a private project. For modifications:
+
+1. Edit converter files for new channels
+2. Test with sample PDFs
+3. Commit and push
+4. GitHub Pages auto-updates
+
+## 📄 License
 
 Internal use only - All rights reserved
 
-## Support
+---
 
-For questions or issues:
-- Check the troubleshooting section above
-- Review API documentation in `backend/README.md`
-- Contact system administrator
+## 🎉 Live Demo
+
+**After deploying to GitHub Pages:**
+
+```
+https://shehank98.github.io/Reconciliation/static-app/
+```
+
+**Features:**
+- ✨ Modern UI with tab navigation
+- 📊 Real-time data preview
+- 🔄 Automatic reconciliation
+- 📥 Excel & PDF export
+- ✋ Manual matching interface
+- 📱 Mobile responsive
 
 ---
 
-**Version**: 2.0.0 (Modern Web Application)
-**Last Updated**: 2024
-**Maintained By**: Development Team
+**Version:** 2.0 Static
+**Type:** Pure Static Web Application
+**Backend:** None Required
+**Hosting:** GitHub Pages
+**Cost:** $0/month
+
+For detailed setup instructions, see **[STATIC_APP_GUIDE.md](STATIC_APP_GUIDE.md)**
