@@ -1,0 +1,76 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+venv/
+env/
+ENV/
+
+# Backend
+backend/credentials/
+backend/uploads/
+backend/*.db
+backend/*.sqlite
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Test data
+test_data/
+sample_data/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# PDF and Excel files (exclude from git)
+*.pdf
+*.xlsx
+*.xls
+
+# Except for templates/samples (if any)
+!sample_template.xlsx
+!sample_tc.pdf
